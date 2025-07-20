@@ -1,5 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
+#include "Player/P0_PlayerController.h"
+
 #include "GameFramework/Pawn.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "NiagaraFunctionLibrary.h"
@@ -8,7 +10,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 #include "Public/Interaction/InteractableObjInterface.h"
-#include "Player/P0_PlayerController.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
