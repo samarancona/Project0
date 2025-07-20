@@ -7,7 +7,7 @@
 #include "InteractableObjInterface.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE()
+UINTERFACE(Blueprintable)
 class UInteractableObjInterface : public UInterface
 {
 	GENERATED_BODY()
