@@ -12,16 +12,17 @@ class UNiagaraSystem;
 class UInputMappingContext;
 class UInputAction;
 class IInteractableObjInterface;
+struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS()
 class PROJECT0_API AP0_PlayerController : public APlayerController
 {
-	GENERATED_BODY()
+        GENERATED_BODY()
 
 public:
-	AP0_PlayerController();
+        AP0_PlayerController();
 
 	/** Time Threshold to know if it was a short press */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -39,9 +40,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* SetDestinationClickAction;
 
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	UInputAction* SetDestinationTouchAction;
+        /** Jump Input Action */
+        UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+        UInputAction* SetDestinationTouchAction;
+
+        /** Movement input action used when WASD/controller mode is enabled */
+        UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+        UInputAction* MoveAction;
+
+        /** If true, movement will be handled via WASD/controller instead of click */
+        UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Input)
+        bool bUseDirectMovement = false;
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
@@ -57,8 +66,9 @@ protected:
 	void OnInputStarted();
 	void OnSetDestinationTriggered();
 	void OnSetDestinationReleased();
-	void OnTouchTriggered();
-	void OnTouchReleased();
+        void OnTouchTriggered();
+        void OnTouchReleased();
+        void Move(const FInputActionValue& Value);
 
 private:
 	FVector CachedDestination;

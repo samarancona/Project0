@@ -10,12 +10,15 @@
 #include "EnhancedInputSubsystems.h"
 #include "Engine/LocalPlayer.h"
 #include "Public/Interaction/InteractableObjInterface.h"
+#include "InputActionValue.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 AP0_PlayerController::AP0_PlayerController(): ShortPressThreshold(0), FXCursor(nullptr), DefaultMappingContext(nullptr),
                                               SetDestinationClickAction(nullptr),
                                               SetDestinationTouchAction(nullptr),
+                                              MoveAction(nullptr),
+                                              bUseDirectMovement(false),
                                               bMoveToMouseCursor(0), bIsTouch(false)
 {
 	bShowMouseCursor = true;
@@ -48,25 +51,35 @@ void AP0_PlayerController::SetupInputComponent()
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
 
-	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
-	{
-		// Setup mouse input events
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AP0_PlayerController::OnInputStarted);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AP0_PlayerController::OnSetDestinationTriggered);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AP0_PlayerController::OnSetDestinationReleased);
-		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AP0_PlayerController::OnSetDestinationReleased);
+       // Set up action bindings
+       if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+       {
+               if (bUseDirectMovement)
+               {
+                       if (MoveAction)
+                       {
+                               EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AP0_PlayerController::Move);
+                       }
+               }
+               else
+               {
+                       // Setup mouse input events
+                       EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AP0_PlayerController::OnInputStarted);
+                       EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AP0_PlayerController::OnSetDestinationTriggered);
+                       EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AP0_PlayerController::OnSetDestinationReleased);
+                       EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AP0_PlayerController::OnSetDestinationReleased);
 
-		// Setup touch input events
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &AP0_PlayerController::OnInputStarted);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AP0_PlayerController::OnTouchTriggered);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AP0_PlayerController::OnTouchReleased);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AP0_PlayerController::OnTouchReleased);
-	}
-	else
-	{
-		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
-	}
+                       // Setup touch input events
+                       EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &AP0_PlayerController::OnInputStarted);
+                       EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AP0_PlayerController::OnTouchTriggered);
+                       EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AP0_PlayerController::OnTouchReleased);
+                       EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AP0_PlayerController::OnTouchReleased);
+               }
+       }
+       else
+       {
+               UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+       }
 }
 
 void AP0_PlayerController::OnInputStarted()
@@ -129,8 +142,23 @@ void AP0_PlayerController::OnTouchTriggered()
 
 void AP0_PlayerController::OnTouchReleased()
 {
-	bIsTouch = false;
-	OnSetDestinationReleased();
+        bIsTouch = false;
+        OnSetDestinationReleased();
+}
+
+void AP0_PlayerController::Move(const FInputActionValue& Value)
+{
+       if (APawn* ControlledPawn = GetPawn())
+       {
+               FVector2D MovementVector = Value.Get<FVector2D>();
+               const FRotator YawRotation(0, GetControlRotation().Yaw, 0);
+
+               const FVector ForwardDir = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+               const FVector RightDir = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+               ControlledPawn->AddMovementInput(ForwardDir, MovementVector.Y);
+               ControlledPawn->AddMovementInput(RightDir, MovementVector.X);
+       }
 }
 
 void AP0_PlayerController::CursorTrace()
