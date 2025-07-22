@@ -75,6 +75,7 @@ protected:
 
 	AP0_PlayerState* GetP0_PlayerState() const;
 	UP0_AbilitySystemComponent* GetP0_AbilitySystemComponent() const;
+	
 private:
 	FVector CachedDestination;
 

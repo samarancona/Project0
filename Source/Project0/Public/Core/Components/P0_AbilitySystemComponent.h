@@ -85,7 +85,7 @@ public:
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 
 
-	typedef TFunctionRef<bool(const UP0_GameplayAbility* BLAbility, FGameplayAbilitySpecHandle Handle)> TShouldCancelAbilityFunc;
+	typedef TFunctionRef<bool(const UP0_GameplayAbility* Ability, FGameplayAbilitySpecHandle Handle)> TShouldCancelAbilityFunc;
 	void CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc, bool bReplicateCancelAbility);
 	
 	void CancelInputActivatedAbilities(bool bReplicateCancelAbility);
@@ -107,16 +107,16 @@ public:
 	virtual void Multicast_ReceiveDamage(UP0_AbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
 
 	/* Gameplay cues */
-	UFUNCTION(BlueprintCallable, Category = "BloodLoop|GameplayCue",
+	UFUNCTION(BlueprintCallable, Category = "Project0|GameplayCue",
 		Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
 	void ExecuteGameplayCueLocal(const FGameplayTag GameplayCueTag,
 	                             const FGameplayCueParameters& GameplayCueParameters);
 
-	UFUNCTION(BlueprintCallable, Category = "BloodLoop|GameplayCue",
+	UFUNCTION(BlueprintCallable, Category = "Project0|GameplayCue",
 		Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
 	void AddGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
 
-	UFUNCTION(BlueprintCallable, Category = "BloodLoop|GameplayCue",
+	UFUNCTION(BlueprintCallable, Category = "Project0|GameplayCue",
 		Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
 	void RemoveGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
 
@@ -158,9 +158,9 @@ public:
 	void K2_RemoveLooseGameplayTags(const FGameplayTagContainer& GameplayTags, int32 Count = 1);
 
 	bool IsActivationGroupBlocked(EP0AbilityActivationGroup Group) const;
-	void AddAbilityToActivationGroup(EP0AbilityActivationGroup Group, UP0_GameplayAbility* BLAbility);
-	void RemoveAbilityFromActivationGroup(EP0AbilityActivationGroup Group, UP0_GameplayAbility* BLAbility);
-	void CancelActivationGroupAbilities(EP0AbilityActivationGroup Group, UP0_GameplayAbility* IgnoreBLAbility, bool bReplicateCancelAbility);
+	void AddAbilityToActivationGroup(EP0AbilityActivationGroup Group, UP0_GameplayAbility* Ability);
+	void RemoveAbilityFromActivationGroup(EP0AbilityActivationGroup Group, UP0_GameplayAbility* Ability);
+	void CancelActivationGroupAbilities(EP0AbilityActivationGroup Group, UP0_GameplayAbility* IgnoreAbility, bool bReplicateCancelAbility);
 
 	
 	#pragma region Animations

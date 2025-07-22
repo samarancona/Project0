@@ -86,25 +86,25 @@ void UP0_AbilitySystemComponent::CancelAbilitiesByFunc(TShouldCancelAbilityFunc 
 			continue;
 		}
 
-		UP0_GameplayAbility* BLAbilityCDO = CastChecked<UP0_GameplayAbility>(AbilitySpec.Ability);
+		UP0_GameplayAbility* AbilityCDO = CastChecked<UP0_GameplayAbility>(AbilitySpec.Ability);
 
-		if (BLAbilityCDO->GetInstancingPolicy() != EGameplayAbilityInstancingPolicy::NonInstanced)
+		if (AbilityCDO->GetInstancingPolicy() != EGameplayAbilityInstancingPolicy::NonInstanced)
 		{
 			// Cancel all the spawned instances, not the CDO.
 			TArray<UGameplayAbility*> Instances = AbilitySpec.GetAbilityInstances();
 			for (UGameplayAbility* AbilityInstance : Instances)
 			{
-				UP0_GameplayAbility* BLAbilityInstance = CastChecked<UP0_GameplayAbility>(AbilityInstance);
+				UP0_GameplayAbility* GameplayAbility = CastChecked<UP0_GameplayAbility>(AbilityInstance);
 
-				if (ShouldCancelFunc(BLAbilityInstance, AbilitySpec.Handle))
+				if (ShouldCancelFunc(GameplayAbility, AbilitySpec.Handle))
 				{
-					if (BLAbilityInstance->CanBeCanceled())
+					if (GameplayAbility->CanBeCanceled())
 					{
-						BLAbilityInstance->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), BLAbilityInstance->GetCurrentActivationInfo(), bReplicateCancelAbility);
+						GameplayAbility->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), GameplayAbility->GetCurrentActivationInfo(), bReplicateCancelAbility);
 					}
 					else
 					{
-						P0_LOG_ERROR("CancelAbilitiesByFunc: Can't cancel ability [%s] because CanBeCanceled is false.", *BLAbilityInstance->GetName());
+						P0_LOG_ERROR("CancelAbilitiesByFunc: Can't cancel ability [%s] because CanBeCanceled is false.", *GameplayAbility->GetName());
 					}
 				}
 			}
@@ -112,11 +112,11 @@ void UP0_AbilitySystemComponent::CancelAbilitiesByFunc(TShouldCancelAbilityFunc 
 		else
 		{
 			// Cancel the non-instanced ability CDO.
-			if (ShouldCancelFunc(BLAbilityCDO, AbilitySpec.Handle))
+			if (ShouldCancelFunc(AbilityCDO, AbilitySpec.Handle))
 			{
 				// Non-instanced abilities can always be canceled.
-				check(BLAbilityCDO->CanBeCanceled());
-				BLAbilityCDO->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), FGameplayAbilityActivationInfo(), bReplicateCancelAbility);
+				check(AbilityCDO->CanBeCanceled());
+				AbilityCDO->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), FGameplayAbilityActivationInfo(), bReplicateCancelAbility);
 			}
 		}
 	}
@@ -124,9 +124,9 @@ void UP0_AbilitySystemComponent::CancelAbilitiesByFunc(TShouldCancelAbilityFunc 
 
 void UP0_AbilitySystemComponent::CancelInputActivatedAbilities(bool bReplicateCancelAbility)
 {
-	auto ShouldCancelFunc = [this](const UP0_GameplayAbility* BLAbility, FGameplayAbilitySpecHandle Handle)
+	auto ShouldCancelFunc = [this](const UP0_GameplayAbility* Ability, FGameplayAbilitySpecHandle Handle)
 	{
-		const EP0AbilityActivationPolicy ActivationPolicy = BLAbility->GetActivationPolicy();
+		const EP0AbilityActivationPolicy ActivationPolicy = Ability->GetActivationPolicy();
 		return ((ActivationPolicy == EP0AbilityActivationPolicy::OnInputTriggered) || (ActivationPolicy == EP0AbilityActivationPolicy::WhileInputActive));
 	};
 
@@ -295,9 +295,9 @@ void UP0_AbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 		{
 			if (AbilitySpec->Ability && !AbilitySpec->IsActive())
 			{
-				const UP0_GameplayAbility* BLAbilityCDO = CastChecked<UP0_GameplayAbility>(AbilitySpec->Ability);
+				const UP0_GameplayAbility* AbilityCDO = CastChecked<UP0_GameplayAbility>(AbilitySpec->Ability);
 
-				if (BLAbilityCDO && BLAbilityCDO->GetActivationPolicy() == EP0AbilityActivationPolicy::WhileInputActive)
+				if (AbilityCDO && AbilityCDO->GetActivationPolicy() == EP0AbilityActivationPolicy::WhileInputActive)
 				{
 					AbilitiesToActivate.AddUnique(AbilitySpec->Handle);
 				}
@@ -491,9 +491,9 @@ void UP0_AbilitySystemComponent::HandleAbilityFailed(const UGameplayAbility* Abi
 {
 	P0_LOG_WARNING("Ability %s failed to activate (tags: %s)" ,*GetPathNameSafe(Ability), *FailureReason.ToString());
 
-	// if (const UP0_GameplayAbility* BLAbility = Cast<const UP0_GameplayAbility>(Ability))
+	// if (const UP0_GameplayAbility* Ability = Cast<const UP0_GameplayAbility>(Ability))
 	// {
-	// 	BLAbility->OnAbilityFailedToActivate(FailureReason);
+	// 	Ability->OnAbilityFailedToActivate(FailureReason);
 	// }	
 }
 
@@ -522,9 +522,9 @@ bool UP0_AbilitySystemComponent::IsActivationGroupBlocked(EP0AbilityActivationGr
 	return bBlocked;
 }
 
-void UP0_AbilitySystemComponent::AddAbilityToActivationGroup(EP0AbilityActivationGroup Group, UP0_GameplayAbility* BLAbility)
+void UP0_AbilitySystemComponent::AddAbilityToActivationGroup(EP0AbilityActivationGroup Group, UP0_GameplayAbility* Ability)
 {
-	check(BLAbility);
+	check(Ability);
 	check(ActivationGroupCounts[(uint8)Group] < INT32_MAX);
 
 	ActivationGroupCounts[(uint8)Group]++;
@@ -539,7 +539,7 @@ void UP0_AbilitySystemComponent::AddAbilityToActivationGroup(EP0AbilityActivatio
 
 	case EP0AbilityActivationGroup::Exclusive_Replaceable:
 	case EP0AbilityActivationGroup::Exclusive_Blocking:
-		CancelActivationGroupAbilities(EP0AbilityActivationGroup::Exclusive_Replaceable, BLAbility, bReplicateCancelAbility);
+		CancelActivationGroupAbilities(EP0AbilityActivationGroup::Exclusive_Replaceable, Ability, bReplicateCancelAbility);
 		break;
 
 	default:
@@ -554,19 +554,19 @@ void UP0_AbilitySystemComponent::AddAbilityToActivationGroup(EP0AbilityActivatio
 	}
 }
 
-void UP0_AbilitySystemComponent::RemoveAbilityFromActivationGroup(EP0AbilityActivationGroup Group, UP0_GameplayAbility* BLAbility)
+void UP0_AbilitySystemComponent::RemoveAbilityFromActivationGroup(EP0AbilityActivationGroup Group, UP0_GameplayAbility* Ability)
 {
-	check(BLAbility);
+	check(Ability);
 	check(ActivationGroupCounts[(uint8)Group] > 0);
 
 	ActivationGroupCounts[(uint8)Group]--;
 }
 
-void UP0_AbilitySystemComponent::CancelActivationGroupAbilities(EP0AbilityActivationGroup Group, UP0_GameplayAbility* IgnoreBLAbility, bool bReplicateCancelAbility)
+void UP0_AbilitySystemComponent::CancelActivationGroupAbilities(EP0AbilityActivationGroup Group, UP0_GameplayAbility* IgnoreAbility, bool bReplicateCancelAbility)
 {
-	auto ShouldCancelFunc = [this, Group, IgnoreBLAbility](const UP0_GameplayAbility* BLAbility, FGameplayAbilitySpecHandle Handle)
+	auto ShouldCancelFunc = [this, Group, IgnoreAbility](const UP0_GameplayAbility* Ability, FGameplayAbilitySpecHandle Handle)
 	{
-		return ((BLAbility->GetActivationGroup() == Group) && (BLAbility != IgnoreBLAbility));
+		return ((Ability->GetActivationGroup() == Group) && (Ability != IgnoreAbility));
 	};
 
 	CancelAbilitiesByFunc(ShouldCancelFunc, bReplicateCancelAbility);

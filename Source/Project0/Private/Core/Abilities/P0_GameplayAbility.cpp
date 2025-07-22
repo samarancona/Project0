@@ -72,10 +72,8 @@ AP0_Character* UP0_GameplayAbility::GetP0CharacterFromActorInfo() const
 
 void UP0_GameplayAbility::TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const
 {
-	const bool bIsPredicting = (Spec.ActivationInfo.ActivationMode == EGameplayAbilityActivationMode::Predicting);
-
 	// Try to activate if activation policy is on spawn.
-	if (ActorInfo && !Spec.IsActive() && !bIsPredicting && (ActivationPolicy == EP0AbilityActivationPolicy::OnSpawn))
+	if (ActorInfo && !Spec.IsActive() && (ActivationPolicy == EP0AbilityActivationPolicy::OnSpawn))
 	{
 		UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
 		const AActor* AvatarActor = ActorInfo->AvatarActor.Get();
