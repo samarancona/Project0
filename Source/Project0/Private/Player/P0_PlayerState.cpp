@@ -9,8 +9,6 @@
 AP0_PlayerState::AP0_PlayerState()
 {
 	AbilitySystemComponent = CreateDefaultSubobject<UP0_AbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	AbilitySystemComponent->SetIsReplicated(true);
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Full);
 
 
 	// Create the attribute set, this replicates by default

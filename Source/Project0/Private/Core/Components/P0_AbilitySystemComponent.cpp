@@ -3,6 +3,7 @@
 
 #include "Core/Components/P0_AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Core/Abilities/P0_GameplayAbility.h"
 #include "GameplayCueManager.h"
 #include "AbilitySystemLog.h"
 #include "Net/UnrealNetwork.h"
@@ -415,8 +416,18 @@ void UP0_AbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& S
 	// Use replicated events instead so that the WaitInputPress ability task works.
 	if (Spec.IsActive())
 	{
-		// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
-		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
+		FPredictionKey PredictionKey;
+
+		// Every active, instanced ability should have a primary instance.
+		if (UGameplayAbility* AbilityInstance = Spec.GetPrimaryInstance())          // ← same helper Epic uses in ASC code :contentReference[oaicite:2]{index=2}
+		{
+			const FGameplayAbilityActivationInfo& Info = AbilityInstance->GetCurrentActivationInfoRef();
+			PredictionKey = Info.GetActivationPredictionKey();                      // still the same accessor :contentReference[oaicite:3]{index=3}
+		}
+
+		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed,
+							  Spec.Handle,
+							  PredictionKey);
 	}
 }
 
@@ -428,8 +439,18 @@ void UP0_AbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& 
 	// Use replicated events instead so that the WaitInputRelease ability task works.
 	if (Spec.IsActive())
 	{
-		// Invoke the InputReleased event. This is not replicated here. If someone is listening, they may replicate the InputReleased event to the server.
-		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
+		FPredictionKey PredictionKey;
+
+		// Every active, instanced ability should have a primary instance.
+		if (UGameplayAbility* AbilityInstance = Spec.GetPrimaryInstance())          // ← same helper Epic uses in ASC code :contentReference[oaicite:2]{index=2}
+		{
+			const FGameplayAbilityActivationInfo& Info = AbilityInstance->GetCurrentActivationInfoRef();
+			PredictionKey = Info.GetActivationPredictionKey();                      // still the same accessor :contentReference[oaicite:3]{index=3}
+		}
+
+		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased,
+							  Spec.Handle,
+							  PredictionKey);
 	}
 }
 

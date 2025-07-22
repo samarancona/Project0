@@ -41,8 +41,8 @@ protected:
 	virtual void BeginPlay() override;
 
 
-	void Input_AbilityInputTagPressed(FGameplayTag InputTag) const;
-	void Input_AbilityInputTagReleased(FGameplayTag InputTag) const;
+	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
+	void Input_AbilityInputTagReleased(FGameplayTag InputTag);
 
 
 	// Input configuration used by player controlled pawns to create input mappings and bind input actions.

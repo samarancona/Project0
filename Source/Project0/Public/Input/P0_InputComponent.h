@@ -67,7 +67,6 @@ void UP0_InputComponent::BindAbilityActions(const UP0_InputConfig* InputConfig, 
 			{
 				BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Triggered, Object, PressedFunc, Action.InputTag).GetHandle());
 			}
-
 			if (ReleasedFunc)
 			{
 				BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc, Action.InputTag).GetHandle());

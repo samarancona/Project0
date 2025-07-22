@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "P0_PlayerState.h"
+#include "Core/Components/P0_AbilitySystemComponent.h"
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
 #include "P0_PlayerController.generated.h"
@@ -61,7 +63,8 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay() override;
 	virtual void PlayerTick(float DeltaTime) override;
-
+	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused) override;
+	
 	/** Input handlers for SetDestination action. */
 	void OnInputStarted();
 	void OnSetDestinationTriggered();
@@ -70,6 +73,8 @@ protected:
 	void OnTouchReleased();
 	void Move(const FInputActionValue& Value);
 
+	AP0_PlayerState* GetP0_PlayerState() const;
+	UP0_AbilitySystemComponent* GetP0_AbilitySystemComponent() const;
 private:
 	FVector CachedDestination;
 

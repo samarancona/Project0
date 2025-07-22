@@ -41,6 +41,8 @@ void ACharacterBase::PossessedBy(AController* NewController)
 		AbilitySystemComponent = CastChecked<UP0_AbilitySystemComponent>(PS->GetAbilitySystemComponent());
 		AttributeSetBase = PS->GetAttributeSetBase();
 
+		AddCharacterAbilities();
+		
 		SetMaxHealth(1000);
 		SetHealth(GetMaxHealth());
 		SetMaxShield(GetMaxHealth());

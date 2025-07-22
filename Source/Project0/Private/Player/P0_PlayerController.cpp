@@ -11,6 +11,8 @@
 #include "Engine/LocalPlayer.h"
 #include "Public/Interaction/InteractableObjInterface.h"
 #include "InputActionValue.h"
+#include "Core/Components/P0_AbilitySystemComponent.h"
+#include "Player/P0_PlayerState.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -37,6 +39,27 @@ void AP0_PlayerController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	CursorTrace();
+}
+AP0_PlayerState* AP0_PlayerController::GetP0_PlayerState() const
+{
+	return CastChecked<AP0_PlayerState>(PlayerState, ECastCheckedType::NullAllowed);
+}
+
+UP0_AbilitySystemComponent* AP0_PlayerController::GetP0_AbilitySystemComponent() const
+{
+	const AP0_PlayerState* PS = GetP0_PlayerState();
+
+	return (PS ? CastChecked<UP0_AbilitySystemComponent>(PS->GetAbilitySystemComponent()) : nullptr);
+}
+
+void AP0_PlayerController::PostProcessInput(const float DeltaTime, const bool bGamePaused)
+{
+	if (UP0_AbilitySystemComponent* ASC = GetP0_AbilitySystemComponent())
+	{
+		ASC->ProcessAbilityInput(DeltaTime, bGamePaused);
+	}
+	
+	Super::PostProcessInput(DeltaTime, bGamePaused);
 }
 
 void AP0_PlayerController::SetupInputComponent()

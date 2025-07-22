@@ -24,7 +24,10 @@ public class Project0 : ModuleRules
 			"GameplayAbilities", "GameplayTags", "GameplayTasks"
 		});
 
-		PrivateDependencyModuleNames.AddRange(new string[] { });
+		PrivateDependencyModuleNames.AddRange(new string[]
+		{
+			"NetCore"
+		});
 
 		PublicIncludePaths.AddRange(new string[] {
 			"Project0",

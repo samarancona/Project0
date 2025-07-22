@@ -1,5 +1,5 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
-
+#include "Public/Character/P0_Character.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -12,7 +12,6 @@
 #include "Core/Abilities/P0_AbilitySet.h"
 #include "Input/P0_InputComponent.h"
 #include "Player/P0_PlayerController.h"
-#include "Public/Character/P0_Character.h"
 
 AP0_Character::AP0_Character()
 {
@@ -82,21 +81,21 @@ void AP0_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 	if (const UP0_InputConfig* inputConfig = InputConfig)
 	{
-		UP0_InputComponent* BL_InputComponent = CastChecked<UP0_InputComponent>(PlayerInputComponent);
-		BL_InputComponent->AddInputMappings(InputConfig, Subsystem);
+		UP0_InputComponent* P0_InputComponent = CastChecked<UP0_InputComponent>(PlayerInputComponent);
+		P0_InputComponent->AddInputMappings(inputConfig, Subsystem);
 
 		TArray<uint32> BindHandles;
-		BL_InputComponent->BindAbilityActions(InputConfig, this, &ThisClass::Input_AbilityInputTagPressed,
+		P0_InputComponent->BindAbilityActions(inputConfig, this, &ThisClass::Input_AbilityInputTagPressed,
 		                                      &ThisClass::Input_AbilityInputTagReleased, /*out*/ BindHandles);
 
-		BL_InputComponent->BindNativeAction(InputConfig, FGameplayTag::RequestGameplayTag("InputTag.Move"),
+		P0_InputComponent->BindNativeAction(inputConfig, FGameplayTag::RequestGameplayTag("InputTag.Move"),
 		                                    ETriggerEvent::Triggered, this, &ThisClass::Input_Move, /*bLogIfNotFound=*/
 		                                    true);
-		BL_InputComponent->BindNativeAction(InputConfig, FGameplayTag::RequestGameplayTag("InputTag.Look.Mouse"),
+		P0_InputComponent->BindNativeAction(inputConfig, FGameplayTag::RequestGameplayTag("InputTag.Look.Mouse"),
 		                                    ETriggerEvent::Triggered, this, &ThisClass::Input_LookMouse,
 		                                    /*bLogIfNotFound=*/
 		                                    true);
-		BL_InputComponent->BindNativeAction(InputConfig, FGameplayTag::RequestGameplayTag("InputTag.Look.Stick"),
+		P0_InputComponent->BindNativeAction(inputConfig, FGameplayTag::RequestGameplayTag("InputTag.Look.Stick"),
 		                                    ETriggerEvent::Triggered, this, &ThisClass::Input_LookStick,
 		                                    /*bLogIfNotFound=*/
 		                                    true);
@@ -116,7 +115,7 @@ void AP0_Character::BindASCInput()
 	if (!ASCInputBound && AbilitySystemComponent && IsValid(InputComponent))
 	{
 		const FTopLevelAssetPath AbilityEnumAssetPath = FTopLevelAssetPath(
-			FName("/Script/BloodLoop"), FName("EP0_AbilityInputId"));
+			FName("/Script/Project0"), FName("EP0_AbilityInputId"));
 		AbilitySystemComponent->BindAbilityActivationToInputComponent(InputComponent, FGameplayAbilityInputBinds(
 			                                                              FString("Confirm"),
 			                                                              FString("Cancel"), AbilityEnumAssetPath,
@@ -129,7 +128,7 @@ void AP0_Character::BindASCInput()
 	}
 }
 
-void AP0_Character::Input_AbilityInputTagPressed(FGameplayTag InputTag) const
+void AP0_Character::Input_AbilityInputTagPressed(FGameplayTag InputTag) 
 {
 	if (AbilitySystemComponent != nullptr)
 	{
@@ -137,7 +136,7 @@ void AP0_Character::Input_AbilityInputTagPressed(FGameplayTag InputTag) const
 	}
 }
 
-void AP0_Character::Input_AbilityInputTagReleased(FGameplayTag InputTag) const
+void AP0_Character::Input_AbilityInputTagReleased(FGameplayTag InputTag)
 {
 	if (AbilitySystemComponent != nullptr)
 	{
