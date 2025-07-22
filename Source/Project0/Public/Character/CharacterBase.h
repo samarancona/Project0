@@ -40,14 +40,6 @@ public:
 	void SetHealth(float Health) const;
 	UFUNCTION(BlueprintCallable, Category = "Project0|Attributes")
 	void SetMaxHealth(float NewMaxHealth) const;
-	UFUNCTION(BlueprintCallable, Category = "Project0|Attributes")
-	void SetShield(float Shield) const;
-	UFUNCTION(BlueprintCallable, Category = "Project0|Attributes")
-	void SetMaxShield(float NewMaxShield) const;
-	UFUNCTION(BlueprintCallable, Category = "Project0|Attributes")
-	float GetShield() const;
-	UFUNCTION(BlueprintCallable, Category = "Project0|Attributes")
-	float GetMaxShield() const;
 protected:
 	
 	// Grant abilities on the Server. The Ability Specs will be replicated to the owning client.

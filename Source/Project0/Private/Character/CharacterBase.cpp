@@ -45,8 +45,7 @@ void ACharacterBase::PossessedBy(AController* NewController)
 		
 		SetMaxHealth(1000);
 		SetHealth(GetMaxHealth());
-		SetMaxShield(GetMaxHealth());
-		SetShield(0);
+		
 		// AI won't have PlayerControllers so we can init again here just to be sure. No harm in initing twice for heroes that have PlayerControllers.
 		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
 
@@ -69,8 +68,6 @@ void ACharacterBase::OnRep_PlayerState()
 		//// Set Health/Mana/Stamina/moveSPeed to their max. This is only necessary for *Respawn*.
 		SetMaxHealth(1000);
 		SetHealth(GetMaxHealth());
-		SetMaxShield(GetMaxHealth());
-		SetShield(0);
 
 		// Init ASC Actor Info for clients. Server will init its ASC when it possesses a new Actor.
 		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
@@ -110,9 +107,6 @@ void ACharacterBase::AddCharacterAbilities()
 }
 
 
-
-
-
 bool ACharacterBase::IsAlive() const
 {
 	return GetHealth() > 0.0f;
@@ -148,42 +142,6 @@ void ACharacterBase::SetMaxHealth(const float NewMaxHealth) const
 	{
 		AttributeSetBase->SetMaxHealth(NewMaxHealth);
 	}
-}
-
-void ACharacterBase::SetShield(const float Shield) const
-{
-	if (AttributeSetBase)
-	{
-		AttributeSetBase->SetShield(Shield);
-	}
-}
-
-void ACharacterBase::SetMaxShield(const float NewMaxShield) const
-{
-	if (AttributeSetBase)
-	{
-		AttributeSetBase->SetMaxShield(NewMaxShield);
-	}
-}
-
-float ACharacterBase::GetShield() const
-{
-	if (IsValid(AttributeSetBase))
-	{
-		return AttributeSetBase->GetShield();
-	}
-
-	return 0.0f;
-}
-
-float ACharacterBase::GetMaxShield() const
-{
-	if (IsValid(AttributeSetBase))
-	{
-		return AttributeSetBase->GetMaxShield();
-	}
-
-	return 0.0f;
 }
 
 

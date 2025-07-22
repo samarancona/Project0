@@ -94,7 +94,7 @@ void UP0_AbilitySet::GiveToAbilitySystem(UP0_AbilitySystemComponent* ASC, FP0Abi
 
 		FGameplayAbilitySpec AbilitySpec(AbilityCDO, AbilityToGrant.AbilityLevel);
 		AbilitySpec.SourceObject = SourceObject;
-		AbilitySpec.DynamicAbilityTags.AddTag(AbilityToGrant.InputTag);
+		AbilitySpec.GetDynamicSpecSourceTags().AddTag(AbilityToGrant.InputTag);
 
 		const FGameplayAbilitySpecHandle AbilitySpecHandle = ASC->GiveAbility(AbilitySpec);
 

@@ -419,10 +419,10 @@ void UP0_AbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& S
 		FPredictionKey PredictionKey;
 
 		// Every active, instanced ability should have a primary instance.
-		if (UGameplayAbility* AbilityInstance = Spec.GetPrimaryInstance())          // ← same helper Epic uses in ASC code :contentReference[oaicite:2]{index=2}
+		if (UGameplayAbility* AbilityInstance = Spec.GetPrimaryInstance())          
 		{
 			const FGameplayAbilityActivationInfo& Info = AbilityInstance->GetCurrentActivationInfoRef();
-			PredictionKey = Info.GetActivationPredictionKey();                      // still the same accessor :contentReference[oaicite:3]{index=3}
+			PredictionKey = Info.GetActivationPredictionKey();                      
 		}
 
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed,
@@ -442,10 +442,10 @@ void UP0_AbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& 
 		FPredictionKey PredictionKey;
 
 		// Every active, instanced ability should have a primary instance.
-		if (UGameplayAbility* AbilityInstance = Spec.GetPrimaryInstance())          // ← same helper Epic uses in ASC code :contentReference[oaicite:2]{index=2}
+		if (UGameplayAbility* AbilityInstance = Spec.GetPrimaryInstance())         
 		{
 			const FGameplayAbilityActivationInfo& Info = AbilityInstance->GetCurrentActivationInfoRef();
-			PredictionKey = Info.GetActivationPredictionKey();                      // still the same accessor :contentReference[oaicite:3]{index=3}
+			PredictionKey = Info.GetActivationPredictionKey();                    
 		}
 
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased,

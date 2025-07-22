@@ -32,15 +32,6 @@ public:
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UP0_AttributeSetBase, MaxHealth);
 
-	// Acts like temporary health
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Shield, Category = "Shield")
-	FGameplayAttributeData Shield;
-	ATTRIBUTE_ACCESSORS(UP0_AttributeSetBase, Shield);
-
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxShield, Category = "Shield")
-	FGameplayAttributeData MaxShield;
-	ATTRIBUTE_ACCESSORS(UP0_AttributeSetBase, MaxShield);
-
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Stamina, Category = "Stamina")
 	FGameplayAttributeData Stamina;
 	ATTRIBUTE_ACCESSORS(UP0_AttributeSetBase, Stamina);
@@ -84,12 +75,6 @@ public:
 
 	UFUNCTION()
 	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth);
-
-	UFUNCTION()
-	void OnRep_Shield(const FGameplayAttributeData& OldShield);
-
-	UFUNCTION()
-	void OnRep_MaxShield(const FGameplayAttributeData& OldMaxShield);
 
 	UFUNCTION()
 	void OnRep_Stamina(const FGameplayAttributeData& OldStamina);

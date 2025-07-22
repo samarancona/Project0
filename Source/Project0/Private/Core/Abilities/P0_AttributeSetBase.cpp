@@ -17,8 +17,6 @@ void UP0_AttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	// Replicate even if the replicated value is the same as the old value
 	DOREPLIFETIME_CONDITION_NOTIFY(UP0_AttributeSetBase, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UP0_AttributeSetBase, MaxHealth, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UP0_AttributeSetBase, Shield, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UP0_AttributeSetBase, MaxShield, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UP0_AttributeSetBase, Stamina, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UP0_AttributeSetBase, MaxStamina, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UP0_AttributeSetBase, StaminaRegenRate, COND_None, REPNOTIFY_Always);
@@ -57,10 +55,6 @@ void UP0_AttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCal
 	else if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
-	}
-	else if (Data.EvaluatedData.Attribute == GetShieldAttribute())
-	{
-		SetShield(FMath::Clamp(GetShield(), 0.0f, GetMaxShield()));
 	}
 	else if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
 	{
@@ -352,17 +346,6 @@ void UP0_AttributeSetBase::OnRep_MaxHealth(const FGameplayAttributeData& OldMaxH
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UP0_AttributeSetBase, MaxHealth, OldMaxHealth);
 }
-
-void UP0_AttributeSetBase::OnRep_Shield(const FGameplayAttributeData& OldShield)
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UP0_AttributeSetBase, Shield, OldShield);
-}
-
-void UP0_AttributeSetBase::OnRep_MaxShield(const FGameplayAttributeData& OldMaxShield)
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UP0_AttributeSetBase, MaxShield, OldMaxShield);
-}
-
 void UP0_AttributeSetBase::OnRep_Stamina(const FGameplayAttributeData& OldStamina)
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UP0_AttributeSetBase, Stamina, OldStamina);
