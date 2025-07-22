@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "P0_PlayerState.h"
+#include "Core/Components/P0_AbilitySystemComponent.h"
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
 #include "P0_PlayerController.generated.h"
@@ -12,6 +14,7 @@ class UNiagaraSystem;
 class UInputMappingContext;
 class UInputAction;
 class IInteractableObjInterface;
+struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -34,7 +37,7 @@ public:
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
-	
+
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* SetDestinationClickAction;
@@ -43,23 +46,35 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* SetDestinationTouchAction;
 
+	/** Movement input action used when WASD/controller mode is enabled */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
+	UInputAction* MoveAction;
+
+	/** If true, movement will be handled via WASD/controller instead of click */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Input)
+	bool bUseDirectMovement = false;
+
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
 
 	virtual void SetupInputComponent() override;
-	
-	// To add mapping context
-	virtual void BeginPlay();
-	virtual void PlayerTick(float DeltaTime) override;
 
+	// To add mapping context
+	virtual void BeginPlay() override;
+	virtual void PlayerTick(float DeltaTime) override;
+	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused) override;
+	
 	/** Input handlers for SetDestination action. */
 	void OnInputStarted();
 	void OnSetDestinationTriggered();
 	void OnSetDestinationReleased();
 	void OnTouchTriggered();
 	void OnTouchReleased();
+	void Move(const FInputActionValue& Value);
 
+	AP0_PlayerState* GetP0_PlayerState() const;
+	UP0_AbilitySystemComponent* GetP0_AbilitySystemComponent() const;
 private:
 	FVector CachedDestination;
 
@@ -67,9 +82,7 @@ private:
 	float FollowTime; // For how long it has been pressed
 
 	void CursorTrace();
-	
+
 	TScriptInterface<IInteractableObjInterface> LastActor;
 	TScriptInterface<IInteractableObjInterface> ThisActor;
 };
-
-
