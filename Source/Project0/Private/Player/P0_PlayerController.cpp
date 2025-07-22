@@ -18,7 +18,6 @@ AP0_PlayerController::AP0_PlayerController(): ShortPressThreshold(0), FXCursor(n
                                               SetDestinationClickAction(nullptr),
                                               SetDestinationTouchAction(nullptr),
                                               MoveAction(nullptr),
-                                              bUseDirectMovement(false),
                                               bMoveToMouseCursor(0), bIsTouch(false)
 {
 	bShowMouseCursor = true;
@@ -44,42 +43,6 @@ void AP0_PlayerController::SetupInputComponent()
 {
 	// set up gameplay key bindings
 	Super::SetupInputComponent();
-
-	// Add Input Mapping Context
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-	{
-		Subsystem->AddMappingContext(DefaultMappingContext, 0);
-	}
-
-       // Set up action bindings
-       if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
-       {
-               if (bUseDirectMovement)
-               {
-                       if (MoveAction)
-                       {
-                               EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AP0_PlayerController::Move);
-                       }
-               }
-               else
-               {
-                       // Setup mouse input events
-                       EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Started, this, &AP0_PlayerController::OnInputStarted);
-                       EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Triggered, this, &AP0_PlayerController::OnSetDestinationTriggered);
-                       EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AP0_PlayerController::OnSetDestinationReleased);
-                       EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AP0_PlayerController::OnSetDestinationReleased);
-
-                       // Setup touch input events
-                       EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &AP0_PlayerController::OnInputStarted);
-                       EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AP0_PlayerController::OnTouchTriggered);
-                       EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AP0_PlayerController::OnTouchReleased);
-                       EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AP0_PlayerController::OnTouchReleased);
-               }
-       }
-       else
-       {
-               UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
-       }
 }
 
 void AP0_PlayerController::OnInputStarted()
@@ -92,7 +55,7 @@ void AP0_PlayerController::OnSetDestinationTriggered()
 {
 	// We flag that the input is being pressed
 	FollowTime += GetWorld()->GetDeltaSeconds();
-	
+
 	// We look for the location in the world where the player has pressed the input
 	FHitResult Hit;
 	bool bHitSuccessful = false;
@@ -110,7 +73,7 @@ void AP0_PlayerController::OnSetDestinationTriggered()
 	{
 		CachedDestination = Hit.Location;
 	}
-	
+
 	// Move towards mouse pointer or touch
 	APawn* ControlledPawn = GetPawn();
 	if (ControlledPawn != nullptr)
@@ -127,7 +90,8 @@ void AP0_PlayerController::OnSetDestinationReleased()
 	{
 		// We move there and spawn some particles
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, CachedDestination, FRotator::ZeroRotator,
+		                                               FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
 	}
 
 	FollowTime = 0.f;
@@ -142,30 +106,30 @@ void AP0_PlayerController::OnTouchTriggered()
 
 void AP0_PlayerController::OnTouchReleased()
 {
-        bIsTouch = false;
-        OnSetDestinationReleased();
+	bIsTouch = false;
+	OnSetDestinationReleased();
 }
 
 void AP0_PlayerController::Move(const FInputActionValue& Value)
 {
-       if (APawn* ControlledPawn = GetPawn())
-       {
-               FVector2D MovementVector = Value.Get<FVector2D>();
-               const FRotator YawRotation(0, GetControlRotation().Yaw, 0);
+	if (APawn* ControlledPawn = GetPawn())
+	{
+		FVector2D MovementVector = Value.Get<FVector2D>();
+		const FRotator YawRotation(0, GetControlRotation().Yaw, 0);
 
-               const FVector ForwardDir = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-               const FVector RightDir = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		const FVector ForwardDir = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		const FVector RightDir = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-               ControlledPawn->AddMovementInput(ForwardDir, MovementVector.Y);
-               ControlledPawn->AddMovementInput(RightDir, MovementVector.X);
-       }
+		ControlledPawn->AddMovementInput(ForwardDir, MovementVector.Y);
+		ControlledPawn->AddMovementInput(RightDir, MovementVector.X);
+	}
 }
 
 void AP0_PlayerController::CursorTrace()
 {
 	FHitResult CursorHit;
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
-	if(!CursorHit.bBlockingHit) return;
+	if (!CursorHit.bBlockingHit) return;
 
 	LastActor = ThisActor;
 	ThisActor = CursorHit.GetActor();
@@ -184,9 +148,9 @@ void AP0_PlayerController::CursorTrace()
 	 *		- Do Nothing
 	 */
 
-	if(LastActor == nullptr)
+	if (LastActor == nullptr)
 	{
-		if(ThisActor != nullptr)
+		if (ThisActor != nullptr)
 		{
 			//Case B
 			ThisActor->HighlightActor();
@@ -198,14 +162,14 @@ void AP0_PlayerController::CursorTrace()
 	}
 	else // LastActor is valid
 	{
-		if(ThisActor == nullptr)
+		if (ThisActor == nullptr)
 		{
 			//Case C
 			LastActor->UnHighlightActor();
 		}
 		else // BothActors are Valid
 		{
-			if(LastActor != ThisActor) //Case D
+			if (LastActor != ThisActor) //Case D
 			{
 				LastActor->UnHighlightActor();
 				ThisActor->HighlightActor();
