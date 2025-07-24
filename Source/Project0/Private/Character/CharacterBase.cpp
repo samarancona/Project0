@@ -4,14 +4,14 @@
 #include "Public/Character/CharacterBase.h"
 
 #include "EnhancedInputSubsystems.h"
-#include "Core/Abilities/P0_AbilitySet.h"
-#include "Core/Abilities/P0_AttributeSetBase.h"
-#include "Input/P0_InputComponent.h"
-#include "Player/P0_PlayerController.h"
-#include "Player/P0_PlayerState.h"
+#include "Core/Abilities/AbilitySet.h"
+#include "Core/Abilities/AttributeSetBase.h"
+#include "Input/CustomInputComponent.h"
+#include "Player/MainPlayerController.h"
+#include "Player/BasePlayerState.h"
 
 
-class UP0_InputComponent;
+class UCustomInputComponent;
 class UEnhancedInputLocalPlayerSubsystem;
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -35,10 +35,10 @@ void ACharacterBase::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
-	if (AP0_PlayerState* PS = GetPlayerState<AP0_PlayerState>())
+	if (ABasePlayerState* PS = GetPlayerState<ABasePlayerState>())
 	{
 		// Set the ASC on the Server. Clients do this in OnRep_PlayerState()
-		AbilitySystemComponent = CastChecked<UP0_AbilitySystemComponent>(PS->GetAbilitySystemComponent());
+		AbilitySystemComponent = CastChecked<UASC_AbilitySystemComponent>(PS->GetAbilitySystemComponent());
 		AttributeSetBase = PS->GetAttributeSetBase();
 
 		AddCharacterAbilities();
@@ -60,9 +60,9 @@ void ACharacterBase::PossessedBy(AController* NewController)
 void ACharacterBase::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
-	if (AP0_PlayerState* PS = GetPlayerState<AP0_PlayerState>())
+	if (ABasePlayerState* PS = GetPlayerState<ABasePlayerState>())
 	{
-		AbilitySystemComponent = CastChecked<UP0_AbilitySystemComponent>(PS->GetAbilitySystemComponent());
+		AbilitySystemComponent = CastChecked<UASC_AbilitySystemComponent>(PS->GetAbilitySystemComponent());
 		AttributeSetBase = PS->GetAttributeSetBase();
 
 		//// Set Health/Mana/Stamina/moveSPeed to their max. This is only necessary for *Respawn*.
@@ -93,9 +93,9 @@ void ACharacterBase::AddCharacterAbilities()
 	
 	AbilitySystemComponent->ClearAllAbilities();
 	
-	auto OUTAbilitySetHandle = new FP0AbilitySet_GrantedHandles();
-	auto ASC = CastChecked<UP0_AbilitySystemComponent>(AbilitySystemComponent);
-	for (const UP0_AbilitySet* StartupAbility : AbilitySets)
+	auto OUTAbilitySetHandle = new FAbilitySet_GrantedHandles();
+	auto ASC = CastChecked<UASC_AbilitySystemComponent>(AbilitySystemComponent);
+	for (const UAbilitySet* StartupAbility : AbilitySets)
 	{
 		if (StartupAbility)
 		{
