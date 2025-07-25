@@ -5,12 +5,12 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "InputMappingContext.h"
-#include "Core/Components/P0_AbilitySystemComponent.h"
+#include "Core/Components/ASC_AbilitySystemComponent.h"
 #include "GameFramework/Character.h"
-#include "Input/P0_InputConfig.h"
+#include "Input/InputConfig.h"
 #include "CharacterBase.generated.h"
 
-class UP0_AbilitySet;
+class UAbilitySet;
 
 UCLASS()
 class PROJECT0_API ACharacterBase : public ACharacter, public IAbilitySystemInterface
@@ -46,11 +46,11 @@ protected:
 	virtual void AddCharacterAbilities();
 	
 	UPROPERTY()
-	TObjectPtr<UP0_AbilitySystemComponent> AbilitySystemComponent;
+	TObjectPtr<UASC_AbilitySystemComponent> AbilitySystemComponent;
 	UPROPERTY()
-	TObjectPtr<class UP0_AttributeSetBase> AttributeSetBase;
+	TObjectPtr<class UAttributeSetBase> AttributeSetBase;
 	
 	// Ability sets to grant to this pawn's ability system.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Project0|Abilities")
-	TArray<TObjectPtr<UP0_AbilitySet>> AbilitySets;
+	TArray<TObjectPtr<UAbilitySet>> AbilitySets;
 };
