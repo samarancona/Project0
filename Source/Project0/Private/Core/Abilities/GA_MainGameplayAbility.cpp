@@ -16,7 +16,7 @@ UGA_MainGameplayAbility::UGA_MainGameplayAbility()
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
 	// Default tags that block this ability from activating
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Dead")));
+	// ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Dead")));
 	
 	// bSourceObjectMustEqualCurrentWeaponToActivate = false;
 

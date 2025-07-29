@@ -13,6 +13,7 @@
 #include "InputActionValue.h"
 #include "Core/Components/ASC_AbilitySystemComponent.h"
 #include "Player/BasePlayerState.h"
+#include "Utils/CustomMacros.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -32,8 +33,9 @@ void AMainPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
-	CursorTrace();
+	// CursorTrace();
 }
+
 ABasePlayerState* AMainPlayerController::GetCustomPS() const
 {
 	return CastChecked<ABasePlayerState>(PlayerState, ECastCheckedType::NullAllowed);
@@ -52,7 +54,7 @@ void AMainPlayerController::PostProcessInput(const float DeltaTime, const bool b
 	{
 		ASC->ProcessAbilityInput(DeltaTime, bGamePaused);
 	}
-	
+
 	Super::PostProcessInput(DeltaTime, bGamePaused);
 }
 
@@ -149,52 +151,38 @@ void AMainPlayerController::CursorTrace()
 	if (!CursorHit.bBlockingHit) return;
 
 	LastActor = ThisActor;
-	ThisActor = CursorHit.GetActor();
+	ThisActor = nullptr;
 
-	/*
-	 * Line Trace from cursor. There are several scenarios
-	 * A. LastActor is null && ThisActor is null
-	 *		- Do Nothing.
-	 * B. LastActor is null && ThisActor is Valid
-	 *		- Highlight ThisActor
-	 * C. LastActor is Valid && ThisActor is null
-	 *		- UnHighlight LastActor
-	 * D. Both Actors are valid, but LastActor != ThisActor
-	 *		- UnHighLight LastActor and Highlight ThisActor
-	 * E. Both Actors are Valid and are the same actor
-	 *		- Do Nothing
-	 */
+	AActor* HitActor = CursorHit.GetActor();
 
-	if (LastActor == nullptr)
+	if (HitActor && HitActor->GetClass()->ImplementsInterface(UInteractableObjInterface::StaticClass()))
 	{
-		if (ThisActor != nullptr)
+		ThisActor = HitActor;
+		// UE_LOG(LogTemp, Warning, TEXT(">>> Hit actor implements Interactable Interface: %s"), *HitActor->GetName());
+	}
+	else
+	{
+		// UE_LOG(LogTemp, Warning, TEXT(">>> Hit actor DOES NOT implement Interactable Interface: %s"), *GetNameSafe(HitActor));
+	}
+
+	//  Highlight / Unhighlight
+	if (!LastActor)
+	{
+		if (ThisActor)
 		{
-			//Case B
-			ThisActor->HighlightActor();
-		}
-		else
-		{
-			//Case A - both are null do nothing
+			IInteractableObjInterface::Execute_HighlightActor(ThisActor);
 		}
 	}
-	else // LastActor is valid
+	else
 	{
-		if (ThisActor == nullptr)
+		if (!ThisActor)
 		{
-			//Case C
-			LastActor->UnHighlightActor();
+			IInteractableObjInterface::Execute_UnHighlightActor(LastActor);
 		}
-		else // BothActors are Valid
+		else if (LastActor != ThisActor)
 		{
-			if (LastActor != ThisActor) //Case D
-			{
-				LastActor->UnHighlightActor();
-				ThisActor->HighlightActor();
-			}
-			else //Case E
-			{
-				//Do Nothing
-			}
+			IInteractableObjInterface::Execute_UnHighlightActor(LastActor);
+			IInteractableObjInterface::Execute_HighlightActor(ThisActor);
 		}
 	}
 }

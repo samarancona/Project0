@@ -50,7 +50,7 @@ void ACharacterBase::PossessedBy(AController* NewController)
 		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
 
 		// Forcibly set the DeadTag count to 0
-		AbilitySystemComponent->SetTagMapCount(FGameplayTag::RequestGameplayTag("State.Dead"), 0);
+		// AbilitySystemComponent->SetTagMapCount(FGameplayTag::RequestGameplayTag("State.Dead"), 0);
 
 		// Forcibly set the LooseTags count to 0		
 		AbilitySystemComponent->SetLooseGameplayTagCount(FGameplayTag(), 0);

@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Core/Abilities/AbilitySet.h"
 #include "Input/CustomInputComponent.h"
+#include "Interaction/InteractorComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/MainPlayerController.h"
 
@@ -42,6 +43,9 @@ AMainCharacter::AMainCharacter()
 	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	InteractorComponent = CreateDefaultSubobject<UInteractorComponent>(TEXT("InteractorComponent"));
+	
 
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;

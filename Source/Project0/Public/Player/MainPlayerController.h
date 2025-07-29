@@ -92,6 +92,6 @@ protected:
 private:
 	void CursorTrace();
 
-	TScriptInterface<IInteractableObjInterface> LastActor;
-	TScriptInterface<IInteractableObjInterface> ThisActor;
+	AActor* LastActor = nullptr;
+	AActor* ThisActor = nullptr;
 };
