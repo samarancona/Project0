@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "Public/Character/CharacterBase.h"
 #include "Public/Interaction/InteractableObjInterface.h"
+
+class AActor;
+
 #include "NPC_Character.generated.h"
 
 UCLASS()
@@ -16,9 +19,10 @@ public:
 	// Sets default values for this character's properties
 	ANPC_Character();
 
-	virtual void HighlightActor() override;
-	virtual void UnHighlightActor() override;
+	virtual void HighlightActor_Implementation() override;
+	virtual void UnHighlightActor_Implementation() override;
+	virtual void Interact_Implementation(AActor* Interactor) override;
 
 	UPROPERTY(BlueprintReadOnly)
-	bool bHighlighted = false; 
+	bool bHighlighted = false;
 };

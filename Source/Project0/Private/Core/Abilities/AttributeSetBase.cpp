@@ -7,7 +7,7 @@
 
 UAttributeSetBase::UAttributeSetBase()
 {
-	DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
+	// DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
 }
 
 void UAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

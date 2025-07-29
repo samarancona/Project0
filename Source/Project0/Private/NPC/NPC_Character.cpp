@@ -13,16 +13,21 @@ ANPC_Character::ANPC_Character()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void ANPC_Character::HighlightActor()
+void ANPC_Character::HighlightActor_Implementation()
 {
 	bHighlighted = true;
 	UKismetSystemLibrary::PrintString(this,TEXT("HighlightActor"));
 }
 
-void ANPC_Character::UnHighlightActor()
+void ANPC_Character::UnHighlightActor_Implementation()
 {
-	bHighlighted = false;
-	UKismetSystemLibrary::PrintString(this,TEXT("UnHighlightActor"));
-	
+        bHighlighted = false;
+        UKismetSystemLibrary::PrintString(this,TEXT("UnHighlightActor"));
+
+}
+
+void ANPC_Character::Interact_Implementation(AActor* Interactor)
+{
+        UKismetSystemLibrary::PrintString(this, TEXT("Interact with NPC"));
 }
 

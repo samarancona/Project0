@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "CharacterBase.h"
 #include "AbilitySystemInterface.h"
+#include "Interaction/InteractorComponent.h"
 #include "AMainCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -33,6 +34,10 @@ public:
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	
+	/** Returns Interactor Component **/
+	UFUNCTION(BlueprintCallable, Category= Components)
+	FORCEINLINE UInteractorComponent* GetInteractorComponent() const { return InteractorComponent; }
 
 
 	void Input_Move(const FInputActionValue& InputActionValue);
@@ -86,6 +91,8 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
+	UPROPERTY(VisibleAnywhere, Category = Components, meta = (AllowPrivateAccess = "true"))
+	UInteractorComponent* InteractorComponent;
 
 	/** True when player input bindings have been applied, will never be true for non - players */
 	bool bReadyToBindInputs;
