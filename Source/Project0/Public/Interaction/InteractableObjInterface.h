@@ -8,9 +8,9 @@
 
 // This class does not need to be modified.
 UINTERFACE(Blueprintable)
-class UInteractableObjInterface : public UInterface
+class PROJECT0_API UInteractableObjInterface : public UInterface
 {
-	GENERATED_BODY()
+        GENERATED_BODY()
 };
 
 /**
@@ -18,10 +18,16 @@ class UInteractableObjInterface : public UInterface
  */
 class PROJECT0_API IInteractableObjInterface
 {
-	GENERATED_BODY()
+        GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
+        // Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void HighlightActor() = 0;
-	virtual void UnHighlightActor() = 0;
+        UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interaction")
+        void HighlightActor();
+
+        UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interaction")
+        void UnHighlightActor();
+
+        UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Interaction")
+        void Interact(AActor* Interactor);
 };

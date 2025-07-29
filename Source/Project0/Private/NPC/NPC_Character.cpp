@@ -21,8 +21,13 @@ void ANPC_Character::HighlightActor()
 
 void ANPC_Character::UnHighlightActor()
 {
-	bHighlighted = false;
-	UKismetSystemLibrary::PrintString(this,TEXT("UnHighlightActor"));
-	
+        bHighlighted = false;
+        UKismetSystemLibrary::PrintString(this,TEXT("UnHighlightActor"));
+
+}
+
+void ANPC_Character::Interact(AActor* Interactor)
+{
+        UKismetSystemLibrary::PrintString(this, TEXT("Interact with NPC"));
 }
 

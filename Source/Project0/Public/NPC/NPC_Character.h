@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "Public/Character/CharacterBase.h"
 #include "Public/Interaction/InteractableObjInterface.h"
+
+class AActor;
+
 #include "NPC_Character.generated.h"
 
 UCLASS()
@@ -13,11 +16,12 @@ class PROJECT0_API ANPC_Character : public ACharacterBase, public IInteractableO
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
-	ANPC_Character();
+        // Sets default values for this character's properties
+        ANPC_Character();
 
-	virtual void HighlightActor() override;
-	virtual void UnHighlightActor() override;
+        virtual void HighlightActor() override;
+        virtual void UnHighlightActor() override;
+        virtual void Interact(AActor* Interactor) override;
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bHighlighted = false; 
