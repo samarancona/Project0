@@ -31,18 +31,12 @@
 			"Enabled": true
 		},
 		{
-			"Name": "GameplayAbilities",
+			"Name": "Landmass",
 			"Enabled": true
 		},
-		{
-			"Name": "FlatNodes",
-			"Enabled": true,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/b719437f3fb54c259b34227363df8cab"
-		},
-		{
-			"Name": "ElectronicNodes",
-			"Enabled": true,
-			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/5cb2a394d0c04e73891762be4cbd7216"
-		}		
+    {
+			"Name": "GameplayAbilities",
+			"Enabled": true
+		}
 	]
 }
